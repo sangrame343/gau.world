@@ -1,0 +1,68 @@
+.donor-showcase {
+  padding: 2rem;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.donor-cards {
+  background: white;
+  border-radius: 15px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  width: 180px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.5s ease;
+}
+
+.donor-cards:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.donor-cards h3 {
+  margin: 0.5rem 0;
+  color: #2c3e50;
+}
+
+.donor-cards p {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.donor-cards span {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.donor-cards.recent small {
+  color: #999;
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
