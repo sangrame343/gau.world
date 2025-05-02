@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import "./Navbar.css";
 import logo from "../../assets/gau_logo.png";
 import { NavLink } from "react-router-dom";
+import { logoutUser } from "../../utils/Auth";
 
-const Navbar = () => {
+const Navbar = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  const handleLogout = () => {
+    logoutUser(); // Clear from localStorage
+    onLogout(); // Inform App to redirect to login
+  };
 
   return (
     <nav className="navbar">
@@ -41,6 +46,11 @@ const Navbar = () => {
             <NavLink to="/contact" onClick={toggleMenu}>
               Contact
             </NavLink>
+          </li>{" "}
+          <li>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
           </li>
         </ul>
 

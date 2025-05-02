@@ -40,6 +40,13 @@ const DonorHistory = () => {
     });
   };
 
+  const deleteDonation = (timestamp) => {
+    const updatedDonors = donors.filter((d) => d.time !== timestamp);
+    setDonors(updatedDonors);
+    localStorage.setItem("donations", JSON.stringify(updatedDonors));
+    setSelectedDonor(null);
+  };
+
   const paginatedDonors = () => {
     const filtered = getFilteredDonors();
     const indexOfLast = currentPage * donorsPerPage;
@@ -87,9 +94,12 @@ const DonorHistory = () => {
                   <strong>{donor.name}</strong>
                 </p>
                 <p className="donors-amount">
-                  ₹{donor.amount} ({donor.rotis} rotis)
+                  ₹{donor.amount}{" "}
+                  {donor.title ? `(${donor.title})` : `(${donor.rotis} rotis)`}
                 </p>
-                <p className="donors-time">{formatTimeAgo(donor.time)}</p>
+                <p className="donors-time">
+                  {new Date(donor.time).toLocaleString()}
+                </p>
               </div>
             </div>
           ))}
@@ -121,15 +131,42 @@ const DonorHistory = () => {
             <p>
               <strong>Amount:</strong> ₹{selectedDonor.amount}
             </p>
+            {selectedDonor.title ? (
+              <>
+                <p>
+                  <strong>Donation Type:</strong> {selectedDonor.title}
+                </p>
+                {selectedDonor.description && (
+                  <p>
+                    <strong>Description:</strong> {selectedDonor.description}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p>
+                <strong>Rotis:</strong> {selectedDonor.rotis}
+              </p>
+            )}
             <p>
-              <strong>Rotis:</strong> {selectedDonor.rotis}
+              <strong>Time:</strong>{" "}
+              {new Date(selectedDonor.time).toLocaleString()}
             </p>
-            <p>
-              <strong>Time:</strong> {formatTimeAgo(selectedDonor.time)}
-            </p>
-            <button onClick={() => exportToPDF(selectedDonor)}>
-              Export Invoice
-            </button>
+
+            <div style={{ marginTop: "10px" }}>
+              <button onClick={() => exportToPDF(selectedDonor)}>
+                Export Invoice
+              </button>
+              <button
+                onClick={() => deleteDonation(selectedDonor.time)}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: "#ff4d4d",
+                  color: "white",
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

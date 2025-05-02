@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import {
+  isAuthenticated,
+  setAuthenticatedUser,
+  logoutUser,
+} from "../src/utils/Auth"; // Import the function
+
 import RegisterModal from "./components/RegisterModal/RegisterModal";
 import LoginModal from "./components/LoginModal/LoginModal";
 import Navbar from "./components/Navbar/Navbar";
@@ -17,16 +23,14 @@ import {
 } from "react-router-dom";
 import Payment from "./components/Payment/Payment";
 import DonorHistory from "./components/DonorHistory/DonorHistory";
-const AppContent = ({ isAuthenticated, handleLogin }) => {
-  const location = useLocation();
 
-  // Show navbar only on non-home routes
-  const showNavbar = location.pathname !== "/";
+const AppContent = ({ isAuthenticated, handleLogin, onLogout }) => {
+  const location = useLocation();
+  const showNavbar = location.pathname !== "/"; // Show navbar only on non-home routes
 
   return (
     <>
       {showNavbar && <Navbar />}
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -40,21 +44,31 @@ const AppContent = ({ isAuthenticated, handleLogin }) => {
 };
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
+  const [isAuthenticatedState, setIsAuthenticatedState] = useState(
+    isAuthenticated()
+  );
+  const [showLogin, setShowLogin] = useState(!isAuthenticatedState);
   const [showRegister, setShowRegister] = useState(false);
+
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
   }, []);
+
   const handleLogin = () => {
-    setIsAuthenticated(true);
+    setIsAuthenticatedState(true);
     setShowLogin(false);
     setShowRegister(false);
+    setAuthenticatedUser("user"); // Update this with actual user data if needed
   };
 
+  const handleLogout = () => {
+    setIsAuthenticatedState(false);
+    setShowLogin(true);
+    logoutUser();
+  };
   return (
     <Router>
-      {!isAuthenticated && showLogin && (
+      {!isAuthenticatedState && showLogin && (
         <LoginModal
           onLogin={handleLogin}
           onShowRegister={() => {
@@ -64,7 +78,7 @@ function App() {
         />
       )}
 
-      {!isAuthenticated && showRegister && (
+      {!isAuthenticatedState && showRegister && (
         <RegisterModal
           onRegister={handleLogin}
           onShowLogin={() => {
@@ -74,10 +88,11 @@ function App() {
         />
       )}
 
-      {isAuthenticated && (
+      {isAuthenticatedState && (
         <AppContent
-          isAuthenticated={isAuthenticated}
+          isAuthenticated={isAuthenticatedState}
           handleLogin={handleLogin}
+          onLogout={handleLogout}
         />
       )}
     </Router>

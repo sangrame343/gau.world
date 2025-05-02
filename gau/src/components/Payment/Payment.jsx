@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./Payment.css";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const amount = location.state?.amount || 0;
+  const { amount = 0, type = "roti", title = "" } = location.state || {};
+
   const [donorName, setDonorName] = useState("");
   const [showToast, setShowToast] = useState(false);
 
@@ -21,21 +23,24 @@ const Payment = () => {
       return;
     }
 
-    // Save test data in localStorage
     const donation = {
       name: donorName,
-      amount: amount,
-      rotis: rotiCount,
+      amount,
+      type,
       time: Date.now(),
     };
+
+    if (type === "roti") {
+      donation.rotis = rotiCount;
+    } else {
+      donation.title = title;
+    }
 
     const prevData = JSON.parse(localStorage.getItem("donations")) || [];
     localStorage.setItem("donations", JSON.stringify([donation, ...prevData]));
 
-    // Show toast
     setShowToast(true);
 
-    // Redirect or reset
     setTimeout(() => {
       setShowToast(false);
       navigate("/");
@@ -50,9 +55,17 @@ const Payment = () => {
         <p>
           <strong>Donation Amount:</strong> ₹{amount}
         </p>
-        <p>
-          <strong>Roti Count:</strong> {rotiCount} rotis
-        </p>
+
+        {type === "roti" ? (
+          <p>
+            <strong>Roti Count:</strong> {rotiCount} rotis
+          </p>
+        ) : (
+          <p>
+            <strong>Purpose:</strong> {title}
+          </p>
+        )}
+
         <input
           type="text"
           placeholder="Your Name"

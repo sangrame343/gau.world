@@ -26,7 +26,10 @@ const DonorShowcase = () => {
           <div className="donor-cards" key={idx}>
             <h3>{donor.name}</h3>
             <p>₹{donor.amount}</p>
-            <span>{donor.rotis} rotis</span>
+            <span>
+              {" "}
+              {donor.title ? `(${donor.title})` : `(${donor.rotis} rotis)`}
+            </span>
           </div>
         ))}
       </div>
